@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Plan, Task, FlashCardCollection, FlashCard
+from .models import Plan, Task, FlashCardCollection, FlashCard, Timer
 
 
 class TaskInline(admin.TabularInline):
     """Allow managing tasks directly from the Plan edit page."""
+
     model = Task
     extra = 1
     fields = ('title', 'description', 'status', 'created_at', 'completed_at')
@@ -21,6 +22,7 @@ class PlanAdmin(admin.ModelAdmin):
 
     def task_count(self, obj):
         return obj.tasks.count()
+
     task_count.short_description = 'Total Tasks'
 
 
@@ -41,14 +43,24 @@ class TaskAdmin(admin.ModelAdmin):
             obj.completed_at = None
         super().save_model(request, obj, form, change)
 
+
 @admin.register(FlashCardCollection)
 class FlashCardCollectionAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'user')
     list_filter = ('user',)
     search_fields = ('title',)
 
+
 @admin.register(FlashCard)
 class FlashCardAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'collection')
     list_filter = ('collection__user',)
     search_fields = ('title', 'front_side', 'back_side')
+
+
+@admin.register(Timer)
+class TimerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'user', 'created_at', 'completed_at', 'is_running')
+    list_filter = ('user', 'created_at')
+    search_fields = ('title',)
+    readonly_fields = ('created_at', 'completed_at')

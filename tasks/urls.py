@@ -17,4 +17,6 @@ urlpatterns = [
         views.collection_detail,
         name='collection_detail',
     ),
+    path('timers/', views.timer_list, name='timer_list'),
+    path('timers/<int:timer_id>/stop/', views.timer_stop, name='timer_stop'),
 ]

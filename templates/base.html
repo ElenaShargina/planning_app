@@ -154,6 +154,68 @@
             gap: 15px;
             margin: 20px 0;
         }
+
+        .timer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: white;
+        }
+
+        .bg-running {
+            background: #198754;
+            animation: pulse 2s infinite;
+        }
+
+        .bg-stopped {
+            background: #6c757d;
+        }
+
+        .timer-time {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #212529;
+            margin: 5px 0;
+            letter-spacing: 1px;
+        }
+
+        .timer-stopped {
+            opacity: 0.75;
+        }
+
+        .timer-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin: 0;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
     </style>
 </head>
 
@@ -161,7 +223,9 @@
     <div class="nav">
         <div>
             <a href="{% url 'plan_list' %}" style="text-decoration:none; color:inherit; margin-right:15px;">📋 Plans</a>
-            <a href="{% url 'collection_list' %}" style="text-decoration:none; color:inherit;">🗂️ Flashcards</a>
+            <a href="{% url 'collection_list' %}" style="text-decoration:none; color:inherit; margin-right:15px;">🗂️
+                Flashcards</a>
+            <a href="{% url 'timer_list' %}" style="text-decoration:none; color:inherit;">⏱️ Timers</a>
         </div>
         {% if user.is_authenticated %}
         <span>{{ user.username }} | <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a></span>

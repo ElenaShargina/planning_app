@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>⏱️ Timers</h3>
+
+<form method="post" action="{% url 'timer_list' %}"
+    style="background:white; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; gap:10px; align-items:center;">
+    {% csrf_token %}
+    {{ form.title }}
+    <button type="submit" class="btn">▶ Start</button>
+</form>
+
+<div class="timer-list">
+    {% for timer in timers %}
+    <div class="card {% if not timer.is_running %}timer-stopped{% endif %}">
+        <div class="timer-header">
+            <strong>{{ timer.title }}</strong>
+            <span class="badge {% if timer.is_running %}bg-running{% else %}bg-stopped{% endif %}">
+                {% if timer.is_running %}▶ Running{% else %}⏹ Stopped{% endif %}
+            </span>
+        </div>
+
+        <div class="timer-time" data-start="{{ timer.created_at|date:'c' }}"
+            data-end="{% if timer.completed_at %}{{ timer.completed_at|date:'c' }}{% endif %}">
+            00:00:00
+        </div>
+
+        {% if timer.is_running %}
+        <form method="post" action="{% url 'timer_stop' timer.id %}" style="margin-top:10px;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">⏹ Stop & Save</button>
+        </form>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No timers yet. Start one above!</p>
+    {% endfor %}
+</div>
+
+<script>
+    // Live-update running timers every second
+    document.querySelectorAll('.timer-time').forEach(el => {
+        const start = new Date(el.dataset.start).getTime();
+        const end = el.dataset.end ? new Date(el.dataset.end).getTime() : null;
+
+        const update = () => {
+            const now = end || Date.now();
+            let diff = Math.floor((now - start) / 1000);
+            const h = Math.floor(diff / 3600);
+            diff %= 3600;
+            const m = Math.floor(diff / 60);
+            const s = diff % 60;
+            el.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        };
+
+        update();
+        if (!end) setInterval(update, 1000);
+    });
+</script>
+{% endblock %}

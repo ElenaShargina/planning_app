@@ -115,3 +115,33 @@ def collection_detail(request, collection_id):
         'tasks/collection_detail.html',
         {'collection': collection, 'cards': cards, 'form': form},
     )
+
+
+from .models import Timer
+from .forms import TimerForm
+
+
+@login_required
+def timer_list(request):
+    timers = Timer.objects.filter(user=request.user).order_by('-created_at')
+
+    if request.method == 'POST':
+        form = TimerForm(request.POST)
+        if form.is_valid():
+            timer = form.save(commit=False)
+            timer.user = request.user
+            timer.save()
+            return redirect('timer_list')
+    else:
+        form = TimerForm()
+
+    return render(request, 'tasks/timer_list.html', {'timers': timers, 'form': form})
+
+
+@login_required
+def timer_stop(request, timer_id):
+    timer = get_object_or_404(Timer, id=timer_id, user=request.user)
+    if timer.is_running:
+        timer.completed_at = timezone.now()
+        timer.save()
+    return redirect('timer_list')

@@ -1,83 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Planner{% endblock %}</title>
     <style>
-        body {
-            font-family: system-ui, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f8f9fa;
-            color: #333;
+        :root {
+            --primary: #800080;
+            --bg-light: #f8f9fa;
+            --text-dark: #333;
+            --border-color: #e9ecef;
         }
 
-        .nav {
+        html { font-size: 16px; }
+        body { 
+            font-family: 'Times New Roman', Times, Georgia, serif;
+            margin: 0; 
+            background: var(--bg-light); 
+            color: var(--text-dark); 
+            height: 100vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
+            flex-direction: column;
         }
 
+        /* --- ВЕРХНЯЯ СТРОКА --- */
+        .top-header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex; /* Используем flex для выравнивания кругов и текста */
+            align-items: center;
+            justify-content: center; /* Центрируем заголовок */
+            position: relative; /* Чтобы позиционировать круги абсолютно или относительно */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            z-index: 10;
+            height: 80px; /* Фиксируем высоту для аккуратности */
+        }
+
+        /* Контейнер для кругов слева */
+        .window-controls {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+
+        .app-title {
+            margin: 0;
+            font-size: 3rem; 
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* --- ОСНОВНОЙ ЛЕЙАУТ --- */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* --- ЛЕВАЯ КОЛОНКА --- */
+        .sidebar {
+            width: 280px; /* Чуть шире для крупного текста */
+            background: white;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+        .nav-item {
+            display: block;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 24px;
+            font-weight: 500;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-item:hover {
+            background: #eef2ff;
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- ПРАВАЯ ЧАСТЬ --- */
+        .content-area {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* --- ПРОФИЛЬ --- */
+        .user-profile {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            font-size: 1.1rem;
+        }
+        .btn-logout { 
+            font-size: 1rem; 
+            color: #dc3545; 
+            text-decoration: none; 
+            border-left: 1px solid #eee;
+            padding-left: 15px;
+            margin-left: 5px;
+        }
+
+        /* --- ОБЩИЕ ЭЛЕМЕНТЫ --- */
         .card {
             background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
         }
-
         .btn {
             display: inline-block;
-            padding: 8px 16px;
-            background: #0d6efd;
+            padding: 10px 20px;
+            background: var(--primary);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+        }
+        .btn:hover { background: #0b5ed7; }
+        
+        input, textarea, select {
+            width: 100%; padding: 12px; margin: 8px 0 20px;
+            border: 1px solid #ced4da; border-radius: 8px; box-sizing: border-box;
+            font-size: 1.1rem;
+            font-family: inherit;
         }
 
-        .btn:hover {
-            background: #0b5ed7;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #0d6efd;
-            color: #0d6efd;
-        }
-
-        .btn-success {
-            background: #198754;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-        }
-
-        .task-completed {
-            text-decoration: line-through;
-            opacity: 0.6;
-        }
-
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 15px;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .flip-card {
+         .flip-card {
             background: transparent;
             width: 100%;
             max-width: 400px;
@@ -205,6 +292,8 @@
             margin: 0;
         }
 
+        .timer-time { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
         @keyframes pulse {
 
             0%,
@@ -218,22 +307,46 @@
         }
     </style>
 </head>
-
 <body>
-    <div class="nav">
-        <div>
-            <a href="{% url 'plan_list' %}" style="text-decoration:none; color:inherit; margin-right:15px;">📋 Plans</a>
-            <a href="{% url 'collection_list' %}" style="text-decoration:none; color:inherit; margin-right:15px;">🗂️
-                Flashcards</a>
-            <a href="{% url 'timer_list' %}" style="text-decoration:none; color:inherit;">⏱️ Timers</a>
+    <header class="top-header">
+        <!-- Три маленьких круга слева -->
+        <div class="window-controls">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
         </div>
-        {% if user.is_authenticated %}
-        <span>{{ user.username }} | <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a></span>
-        {% else %}
-        <a href="{% url 'login' %}" class="btn">Login</a>
-        {% endif %}
-    </div>
-    {% block content %}{% endblock %}
-</body>
 
+        <h1 class="app-title">Твой личный помощник</h1>
+    </header>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+            <a href="{% url 'plan_list' %}" class="nav-item {% if request.resolver_match.url_name == 'plan_list' or request.resolver_match.url_name == 'plan_detail' %}active{% endif %}">
+                📋 Планы
+            </a>
+            <a href="{% url 'collection_list' %}" class="nav-item {% if 'collection' in request.resolver_match.url_name %}active{% endif %}">
+                🗂️ Карточки
+            </a>
+            <a href="{% url 'timer_list' %}" class="nav-item {% if 'timer' in request.resolver_match.url_name %}active{% endif %}">
+                ⏱️ Таймер
+            </a>
+        </aside>
+
+        <main class="content-area">
+            <div class="user-profile">
+                {% if user.is_authenticated %}
+                    <span class="user-name">{{ user.username }}</span>
+                    <a href="{% url 'logout' %}" class="btn-logout">Выйти</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-sm">Войти</a>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 60px;">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+</body>
 </html>

@@ -1,13 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
-    <a href="{% url 'collection_create' %}" class="btn">+ New Collection</a>
-    <h3>Your Flashcard Collections</h3>
-    {% for collection in collections %}
-        <div class="card">
-            <h4><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></h4>
-            <p>{{ collection.cards.count }} card{{ collection.cards.count|pluralize }}</p>
-        </div>
-    {% empty %}
-        <p>No collections yet. Create one to start learning!</p>
-    {% endfor %}
+
+    <!-- Верхняя панель раздела -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="margin: 0; font-size: 1.8rem; color: #333; font-weight: 600;">Мои Карточки</h2>
+        
+        <!-- Кнопка ровно 24px -->
+        <a href="{% url 'collection_create' %}" class="btn" style="font-size: 24px; padding: 10px 24px; line-height: 1;">
+            + Создать коллекцию
+        </a>
+    </div>
+
+    <!-- Список коллекций -->
+    <div style="display: flex; flex-direction: column; gap: 15px; max-width: 900px;">
+        {% for collection in collections %}
+            <div class="card">
+                <!-- Заголовок коллекции увеличен -->
+                <h3 style="margin: 0 0 10px 0; font-size: 1.3rem; line-height: 1.2;">
+                    <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: inherit; transition: color 0.2s;">
+                        {{ collection.title }}
+                    </a>
+                </h3>
+                
+                <!-- Описание (если есть) -->
+                {% if collection.description %}
+                <p style="margin: 0 0 15px; color: #555; font-size: 1.2rem; line-height: 1.5;">
+                    {{ collection.description|truncatechars:150 }}
+                </p>
+                {% endif %}
+                
+                <!-- Статистика -->
+                <div style="font-size: 1.1rem; color: #666; border-top: 2px solid #f0f0f0; padding-top: 12px; display: flex; gap: 20px;">
+                    <span>🗂️ Карточек: <b>{{ collection.cards.count }}</b></span>
+                </div>
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 60px; color: #999; background: white; border-radius: 12px; border: 2px dashed #ddd;">
+                <p style="font-size: 1.5rem; margin-bottom: 10px;">У вас пока нет коллекций.</p>
+                <p style="font-size: 1.2rem;">Создайте первую, чтобы начать учить!</p>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}

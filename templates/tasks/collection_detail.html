@@ -1,36 +1,54 @@
 {% extends 'base.html' %}
 {% block content %}
-    <a href="{% url 'collection_list' %}" class="btn btn-outline">← Collections</a>
-    <h3>{{ collection.title }}</h3>
-    
-    <div class="cards-grid">
+    <!-- Заголовок коллекции и кнопка назад -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="margin: 0; font-size: 2.5rem; color: #333; font-weight: 600;">{{ collection.title }}</h2>
+        <a href="{% url 'collection_list' %}" class="btn btn-outline" style="font-size: 24px; padding: 10px 24px; line-height: 1;">
+            ← Назад к коллекциям
+        </a>
+    </div>
+
+    <!-- Сетка карточек -->
+    <div class="cards-grid" style="margin-bottom: 40px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
         {% for card in cards %}
-        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card" onclick="this.classList.toggle('flipped')" style="height: 200px;">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
-                    <div class="card-title">
+                    <div class="card-title" style="font-size: 0.9rem; margin-bottom: 12px;">
                         {% if card.title %}{{ card.title }}{% else %}Front{% endif %}
                     </div>
-                    <div class="card-content">{{ card.front_side|linebreaks }}</div>
-                    <span class="flip-hint">Tap to flip ↻</span>
+                    <div class="card-content" style="font-size: 1.2rem; font-weight: 500;">
+                        {{ card.front_side|linebreaks }}
+                    </div>
+                    <span class="flip-hint" style="bottom: 12px;">Нажмите для ответа ↻</span>
                 </div>
                 <div class="flip-card-back">
-                    <div class="card-title">
+                    <div class="card-title" style="font-size: 0.9rem; margin-bottom: 12px;">
                         {% if card.title %}{{ card.title }}{% else %}Back{% endif %}
                     </div>
-                    <div class="card-content">{{ card.back_side|linebreaks }}</div>
+                    <div class="card-content" style="font-size: 1.2rem; font-weight: 500;">
+                        {{ card.back_side|linebreaks }}
+                    </div>
                 </div>
             </div>
         </div>
         {% empty %}
-            <p>No cards in this collection yet.</p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px; background: white; border-radius: 12px; border: 2px dashed #e9ecef; color: #666;">
+                <p style="font-size: 1.4rem; margin-bottom: 10px;">В этой коллекции пока нет карточек</p>
+                <p style="font-size: 1.1rem;">Добавьте первую с помощью формы ниже</p>
+            </div>
         {% endfor %}
     </div>
 
-    <h4>Add New Card</h4>
-    <form method="post" style="background:white; padding:20px; border-radius:8px;">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">Add Card</button>
-    </form>
+    <!-- Форма добавления карточки -->
+    <div class="card" style="max-width: 800px; padding: 25px; border: 1px solid #e9ecef;">
+        <h3 style="margin: 0 0 20px 0; font-size: 2rem; font-weight: 600;">Добавить новую карточку</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn" style="font-size: 24px; padding: 10px 24px; line-height: 1; margin-top: 10px;">
+                + Добавить карточку
+            </button>
+        </form>
+    </div>
 {% endblock %}

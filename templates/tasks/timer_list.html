@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<h3>⏱️ Timers</h3>
+<h2 style="margin: 0; font-size: 1.8rem; color: #333;">Таймер</h2>
 
 <form method="post" action="{% url 'timer_list' %}"
     style="background:white; padding:15px; border-radius:8px; margin-bottom:20px; display:flex; gap:10px; align-items:center;">
     {% csrf_token %}
     {{ form.title }}
-    <button type="submit" class="btn">▶ Start</button>
+    <button type="submit" class="btn">▶ Запустить</button>
 </form>
 
 <div class="timer-list">
@@ -15,7 +15,7 @@
         <div class="timer-header">
             <strong>{{ timer.title }}</strong>
             <span class="badge {% if timer.is_running %}bg-running{% else %}bg-stopped{% endif %}">
-                {% if timer.is_running %}▶ Running{% else %}⏹ Stopped{% endif %}
+                {% if timer.is_running %}▶ Таймер идёт{% else %}⏹ Стоп{% endif %}
             </span>
         </div>
 
@@ -27,7 +27,7 @@
         {% if timer.is_running %}
         <form method="post" action="{% url 'timer_stop' timer.id %}" style="margin-top:10px;">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">⏹ Stop & Save</button>
+            <button type="submit" class="btn btn-danger">⏹ Остановить и сохранить</button>
         </form>
         {% endif %}
     </div>

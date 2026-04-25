@@ -1,20 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
-    <a href="{% url 'plan_create' %}" class="btn">+ New Plan</a>
-    <h3>Your Plans</h3>
-    {% for plan in plans %}
-        <div class="card">
-            <h4><a href="{% url 'plan_detail' plan.id %}">{{ plan.title }}</a></h4>
-            <p>{{ plan.description|truncatechars:80 }}</p>
-            <small>
-                📋 {{ plan.total_tasks }} task{{ plan.total_tasks|pluralize }}
-                {% if plan.completed_tasks %}
-                    • ✅ {{ plan.completed_tasks }} completed
-                {% endif %}
-                {% if plan.pending_tasks > 0 %}• ⏳ {{ plan.pending_tasks }} pending{% endif %}
-            </small>
-        </div>
-    {% empty %}
-        <p>No plans yet. Create your first one!</p>
-    {% endfor %}
+
+    <!-- Верхняя панель раздела: Заголовок слева, Кнопка справа -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; font-size: 1.8rem; color: #333;">Мои Планы</h2>
+        <a href="{% url 'plan_create' %}" class="btn" style="font-size: 1.5rem; padding: 10px 20px;">
+            + Создать новый план
+        </a>
+    </div>
+
+    <!-- Список планов (идет столбцом слева) -->
+    <div style="display: flex; flex-direction: column; gap: 10px; max-width: 800px;">
+        {% for plan in plans %}
+            <div class="card" style="transition: transform 0.2s;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <h3 style="margin: 0 0 5px 0; font-size: 1.3rem;">
+                        <a href="{% url 'plan_detail' plan.id %}" style="text-decoration: none; color: inherit;">
+                            {{ plan.title }}
+                        </a>
+                    </h3>
+                </div>
+                
+                <p style="margin: 0 0 10px; color: #666; font-size: 0.95rem;">
+                    {{ plan.description|truncatechars:100 }}
+                </p>
+                
+                <div style="font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 8px;">
+                    📋 Всего: <b>{{ plan.total_tasks }}</b> 
+                    {% if plan.completed_tasks > 0 %}
+                        | ✅ Готово: <b>{{ plan.completed_tasks }}</b>
+                    {% endif %}
+                    {% if plan.pending_tasks > 0 %}
+                        | ⏳ В процессе: <b>{{ plan.pending_tasks }}</b>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <p style="font-size: 1.2rem;">У вас пока нет планов.</p>
+                <p>Нажмите кнопку выше, чтобы создать первый!</p>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}

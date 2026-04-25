@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'plan_create' %}" class="btn">+ New Plan</a>
+    <h3>Your Plans</h3>
+    {% for plan in plans %}
+        <div class="card">
+            <h4><a href="{% url 'plan_detail' plan.id %}">{{ plan.title }}</a></h4>
+            <p>{{ plan.description|truncatechars:80 }}</p>
+        </div>
+    {% empty %}
+        <p>No plans yet. Create your first one!</p>
+    {% endfor %}
+{% endblock %}

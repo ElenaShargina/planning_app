@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'plan_list' %}" class="btn btn-outline">← Plans</a>
+    <h3>{{ plan.title }}</h3>
+    <p>{{ plan.description }}</p>
+
+    <h4>Tasks</h4>
+    {% for task in tasks %}
+        <div class="card {% if task.status == 'completed' %}task-completed{% endif %}">
+            <strong>{{ task.title }}</strong> <span style="font-size:0.8em; color:#6c757d;">({{ task.get_status_display }})</span>
+            <p>{{ task.description }}</p>
+            <small>Created: {{ task.created_at|date:"M d, Y" }} | 
+                   {% if task.completed_at %}Completed: {{ task.completed_at|date:"M d, Y" }}{% endif %}
+            </small>
+            <br><br>
+            <a href="{% url 'task_toggle_status' task.id %}" class="btn {% if task.status == 'completed' %}btn-danger{% else %}btn-success{% endif %}">
+                {% if task.status == 'completed' %}↩ Mark Pending{% else %}✓ Mark Completed{% endif %}
+            </a>
+        </div>
+    {% empty %}
+        <p>No tasks in this plan.</p>
+    {% endfor %}
+
+    <h4>Add Task</h4>
+    <form method="post" style="background:white; padding:20px; border-radius:8px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Add Task</button>
+    </form>
+{% endblock %}

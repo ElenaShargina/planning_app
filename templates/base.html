@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Planner{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f8f9fa; color: #333; }
+        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
+        .card { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn { display: inline-block; padding: 8px 16px; background: #0d6efd; color: white; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; }
+        .btn:hover { background: #0b5ed7; }
+        .btn-outline { background: transparent; border: 1px solid #0d6efd; color: #0d6efd; }
+        .btn-success { background: #198754; }
+        .btn-danger { background: #dc3545; }
+        .task-completed { text-decoration: line-through; opacity: 0.6; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ced4da; border-radius: 5px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <h2>📋 Planner</h2>
+        {% if user.is_authenticated %}
+            <span>{{ user.username }} | <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a></span>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn">Login</a>
+        {% endif %}
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

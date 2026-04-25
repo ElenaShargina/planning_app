@@ -1,21 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Plan, Task
-from .forms import PlanForm, TaskForm
+from .models import Plan, Task, FlashCardCollection, FlashCard
+from .forms import PlanForm, TaskForm, FlashCardCollectionForm, FlashCardForm
 from django.db.models import Count, Q
 
 
-from django.db.models import Count, Q  # Make sure this is imported
-
 @login_required
 def plan_list(request):
-    plans = Plan.objects.filter(user=request.user).annotate(
-        total_tasks=Count('tasks'),
-        completed_tasks=Count('tasks', filter=Q(tasks__status='completed')),
-        pending_tasks=Count('tasks', filter=Q(tasks__status__in=['pending', 'in_progress']))
-    ).order_by('-id')
+    plans = (
+        Plan.objects.filter(user=request.user)
+        .annotate(
+            total_tasks=Count('tasks'),
+            completed_tasks=Count('tasks', filter=Q(tasks__status='completed')),
+            pending_tasks=Count(
+                'tasks', filter=Q(tasks__status__in=['pending', 'in_progress'])
+            ),
+        )
+        .order_by('-id')
+    )
     return render(request, 'tasks/plan_list.html', {'plans': plans})
+
 
 @login_required
 def plan_create(request):
@@ -30,11 +35,12 @@ def plan_create(request):
         form = PlanForm()
     return render(request, 'tasks/create_plan.html', {'form': form})
 
+
 @login_required
 def plan_detail(request, plan_id):
     plan = get_object_or_404(Plan, id=plan_id, user=request.user)
     tasks = plan.tasks.all().order_by('-created_at')
-    
+
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -48,8 +54,11 @@ def plan_detail(request, plan_id):
             return redirect('plan_detail', plan_id=plan.id)
     else:
         form = TaskForm()
-        
-    return render(request, 'tasks/plan_detail.html', {'plan': plan, 'tasks': tasks, 'form': form})
+
+    return render(
+        request, 'tasks/plan_detail.html', {'plan': plan, 'tasks': tasks, 'form': form}
+    )
+
 
 @login_required
 def task_toggle_status(request, task_id):
@@ -62,3 +71,47 @@ def task_toggle_status(request, task_id):
         task.completed_at = timezone.now()
     task.save()
     return redirect('plan_detail', plan_id=task.plan.id)
+
+
+@login_required
+def collection_list(request):
+    collections = FlashCardCollection.objects.filter(user=request.user).order_by('-id')
+    return render(request, 'tasks/collection_list.html', {'collections': collections})
+
+
+@login_required
+def collection_create(request):
+    if request.method == 'POST':
+        form = FlashCardCollectionForm(request.POST)
+        if form.is_valid():
+            collection = form.save(commit=False)
+            collection.user = request.user
+            collection.save()
+            return redirect('collection_list')
+    else:
+        form = FlashCardCollectionForm()
+    return render(request, 'tasks/collection_create.html', {'form': form})
+
+
+@login_required
+def collection_detail(request, collection_id):
+    collection = get_object_or_404(
+        FlashCardCollection, id=collection_id, user=request.user
+    )
+    cards = collection.cards.all().order_by('-id')
+
+    if request.method == 'POST':
+        form = FlashCardForm(request.POST)
+        if form.is_valid():
+            card = form.save(commit=False)
+            card.collection = collection
+            card.save()
+            return redirect('collection_detail', collection_id=collection.id)
+    else:
+        form = FlashCardForm()
+
+    return render(
+        request,
+        'tasks/collection_detail.html',
+        {'collection': collection, 'cards': cards, 'form': form},
+    )

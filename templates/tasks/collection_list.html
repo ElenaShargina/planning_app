@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'collection_create' %}" class="btn">+ New Collection</a>
+    <h3>Your Flashcard Collections</h3>
+    {% for collection in collections %}
+        <div class="card">
+            <h4><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></h4>
+            <p>{{ collection.cards.count }} card{{ collection.cards.count|pluralize }}</p>
+        </div>
+    {% empty %}
+        <p>No collections yet. Create one to start learning!</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="{% url 'collection_list' %}" class="btn btn-outline">← Collections</a>
+    <h3>{{ collection.title }}</h3>
+    
+    <div class="cards-grid">
+        {% for card in cards %}
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <div class="card-title">
+                        {% if card.title %}{{ card.title }}{% else %}Front{% endif %}
+                    </div>
+                    <div class="card-content">{{ card.front_side|linebreaks }}</div>
+                    <span class="flip-hint">Tap to flip ↻</span>
+                </div>
+                <div class="flip-card-back">
+                    <div class="card-title">
+                        {% if card.title %}{{ card.title }}{% else %}Back{% endif %}
+                    </div>
+                    <div class="card-content">{{ card.back_side|linebreaks }}</div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <p>No cards in this collection yet.</p>
+        {% endfor %}
+    </div>
+
+    <h4>Add New Card</h4>
+    <form method="post" style="background:white; padding:20px; border-radius:8px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Add Card</button>
+    </form>
+{% endblock %}

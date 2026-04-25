@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3>Create Collection</h3>
+    <form method="post" style="background:white; padding:20px; border-radius:8px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Create Collection</button>
+    </form>
+    <br><a href="{% url 'collection_list' %}" class="btn btn-outline">Cancel</a>
+{% endblock %}

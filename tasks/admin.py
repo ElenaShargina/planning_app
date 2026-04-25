@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Plan, Task
+from .models import Plan, Task, FlashCardCollection, FlashCard
 
 
 class TaskInline(admin.TabularInline):
@@ -40,3 +40,15 @@ class TaskAdmin(admin.ModelAdmin):
         elif obj.status != 'completed':
             obj.completed_at = None
         super().save_model(request, obj, form, change)
+
+@admin.register(FlashCardCollection)
+class FlashCardCollectionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'user')
+    list_filter = ('user',)
+    search_fields = ('title',)
+
+@admin.register(FlashCard)
+class FlashCardAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'collection')
+    list_filter = ('collection__user',)
+    search_fields = ('title', 'front_side', 'back_side')

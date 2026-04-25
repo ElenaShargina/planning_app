@@ -3,10 +3,18 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Plan, Task
 from .forms import PlanForm, TaskForm
+from django.db.models import Count, Q
+
+
+from django.db.models import Count, Q  # Make sure this is imported
 
 @login_required
 def plan_list(request):
-    plans = Plan.objects.filter(user=request.user).order_by('-id')
+    plans = Plan.objects.filter(user=request.user).annotate(
+        total_tasks=Count('tasks'),
+        completed_tasks=Count('tasks', filter=Q(tasks__status='completed')),
+        pending_tasks=Count('tasks', filter=Q(tasks__status__in=['pending', 'in_progress']))
+    ).order_by('-id')
     return render(request, 'tasks/plan_list.html', {'plans': plans})
 
 @login_required

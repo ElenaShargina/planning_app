@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timesince import timesince
+
 
 class Plan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='plans')
@@ -24,3 +26,14 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.status})"
+    
+    @property
+    def duration(self):
+        """
+        Returns the time taken to complete the task.
+        Returns None if task is not completed.
+        Returns a human-readable string (e.g., "2 hours, 15 minutes").
+        """
+        if self.status == 'completed' and self.completed_at and self.created_at:
+            return timesince(self.created_at, self.completed_at)
+        return None

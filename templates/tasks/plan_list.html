@@ -6,6 +6,13 @@
         <div class="card">
             <h4><a href="{% url 'plan_detail' plan.id %}">{{ plan.title }}</a></h4>
             <p>{{ plan.description|truncatechars:80 }}</p>
+            <small>
+                📋 {{ plan.total_tasks }} task{{ plan.total_tasks|pluralize }}
+                {% if plan.completed_tasks %}
+                    • ✅ {{ plan.completed_tasks }} completed
+                {% endif %}
+                {% if plan.pending_tasks > 0 %}• ⏳ {{ plan.pending_tasks }} pending{% endif %}
+            </small>
         </div>
     {% empty %}
         <p>No plans yet. Create your first one!</p>

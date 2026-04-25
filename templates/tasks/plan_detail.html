@@ -6,20 +6,36 @@
 
     <h4>Tasks</h4>
     {% for task in tasks %}
-        <div class="card {% if task.status == 'completed' %}task-completed{% endif %}">
-            <strong>{{ task.title }}</strong> <span style="font-size:0.8em; color:#6c757d;">({{ task.get_status_display }})</span>
-            <p>{{ task.description }}</p>
-            <small>Created: {{ task.created_at|date:"M d, Y" }} | 
-                   {% if task.completed_at %}Completed: {{ task.completed_at|date:"M d, Y" }}{% endif %}
-            </small>
-            <br><br>
-            <a href="{% url 'task_toggle_status' task.id %}" class="btn {% if task.status == 'completed' %}btn-danger{% else %}btn-success{% endif %}">
-                {% if task.status == 'completed' %}↩ Mark Pending{% else %}✓ Mark Completed{% endif %}
-            </a>
-        </div>
-    {% empty %}
-        <p>No tasks in this plan.</p>
-    {% endfor %}
+    <div class="card {% if task.status == 'completed' %}task-completed{% endif %}">
+        <strong>{{ task.title }}</strong> 
+        <span style="font-size:0.8em; color:#6c757d;">({{ task.get_status_display }})</span>
+        
+        {% if task.duration %}
+            <span style="float:right; font-size:0.85em; background:#e9ecef; padding:3px 8px; border-radius:4px;">
+                ⏱️ {{ task.duration }}
+            </span>
+        {% elif task.status != 'completed' %}
+            <span style="float:right; font-size:0.85em; color:#6c757d;">
+                ⏳ In progress
+            </span>
+        {% endif %}
+        
+        <p>{{ task.description }}</p>
+        <small>
+            Created: {{ task.created_at|date:"M d, Y H:i" }} 
+            {% if task.completed_at %}
+                | Completed: {{ task.completed_at|date:"M d, Y H:i" }}
+            {% endif %}
+        </small>
+        <br><br>
+        <a href="{% url 'task_toggle_status' task.id %}" 
+           class="btn {% if task.status == 'completed' %}btn-danger{% else %}btn-success{% endif %}">
+            {% if task.status == 'completed' %}↩ Mark Pending{% else %}✓ Mark Completed{% endif %}
+        </a>
+    </div>
+{% empty %}
+    <p>No tasks in this plan.</p>
+{% endfor %}
 
     <h4>Add Task</h4>
     <form method="post" style="background:white; padding:20px; border-radius:8px;">

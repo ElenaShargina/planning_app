@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="margin: 0; font-size: 2.5rem; color: #333; font-weight: 600;">Отчеты по времени</h2>
+    </div>
+
+    <!-- Форма создания отчета -->
+    <div class="card" style="padding: 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <form method="post" action="{% url 'report_generate' %}" style="display: flex; align-items: center; gap: 12px; margin: 0; width: 100%;">
+            {% csrf_token %}
+            <label for="report_date" style="font-weight: 500; font-size: 1.1rem; white-space: nowrap;">Выберите дату:</label>
+            <input type="date" name="report_date" id="report_date" required value="{{ today|default:'' }}" style="margin: 0; padding: 10px; font-size: 1rem; flex: 1; max-width: 250px;">
+            <button type="submit" class="btn" style="font-size: 1.1rem; white-space: nowrap;"> Создать отчет</button>
+        </form>
+        <p style="margin: 8px 0 0; color: #555; font-size: 0.95rem; width: 100%;">
+            <i>Отчет суммирует время только по тем задачам, которые были <b>созданы и завершены</b> в выбранный день.</i>
+        </p>
+    </div>
+
+    <!-- Сообщения Django -->
+    {% if messages %}
+    <div style="margin-bottom: 15px;">
+        {% for message in messages %}
+            <div style="padding: 10px 15px; border-radius: 6px; background: {% if message.tags == 'success' %}#d1e7dd{% else %}#f8d7da{% endif %}; color: {% if message.tags == 'success' %}#0f5132{% else %}#842029{% endif %}; border: 1px solid {% if message.tags == 'success' %}#badbcc{% else %}#f5c2c7{% endif %};">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Таблица отчетов -->
+    <div class="card" style="padding: 0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead style="background: #f8f9fa; border-bottom: 2px solid #e9ecef;">
+                <tr>
+                    <th style="padding: 15px 20px; font-size: 1.2rem;">Дата</th>
+                    <th style="padding: 15px 20px; font-size: 1.2rem;">Потраченное время</th>
+                    <th style="padding: 15px 20px; font-size: 1.2rem;">Завершенные задачи</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 15px 20px; font-size: 1.1rem;">
+                        {{ report.report_date|date:"d E Y" }}
+                    </td>
+                    <td style="padding: 15px 20px; font-size: 1.4rem; font-weight: bold; color: var(--primary);">
+                        {{ report.formatted_time }}
+                    </td>
+                    <td style="padding: 15px 20px; font-size: 1rem; color: #555;">
+                        {% if report.total_time_seconds > 0 %}
+                            Продуктивный день!
+                        {% else %}
+                            Нет подходящих задач
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="padding: 40px; text-align: center; color: #777; background: #fafafa;">
+                        Отчетов пока нет. Выберите дату выше и нажмите "Создать отчет".
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

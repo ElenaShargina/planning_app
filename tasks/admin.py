@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import Plan, Task, FlashCardCollection, FlashCard, Timer
+from .models import Plan, Task, FlashCardCollection, FlashCard, Timer, Bookmark
 
 
 class TaskInline(admin.TabularInline):
@@ -64,3 +64,10 @@ class TimerAdmin(admin.ModelAdmin):
     list_filter = ('user', 'created_at')
     search_fields = ('title',)
     readonly_fields = ('created_at', 'completed_at')
+
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'url', 'bookmark_date', 'user')
+    list_filter = ('user', 'bookmark_date')
+    search_fields = ('title', 'url')
+    date_hierarchy = 'bookmark_date'

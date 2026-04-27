@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Plan, Task, FlashCardCollection, FlashCard
+from .models import Plan, Task, FlashCardCollection, FlashCard, Bookmark, DailyReport
 from .forms import PlanForm, TaskForm, FlashCardCollectionForm, FlashCardForm
 from django.db.models import Count, Q
+from .forms import BookmarkForm
+from .models import Bookmark
+from datetime import datetime
+from django.contrib import messages
 
 
 @login_required
@@ -145,3 +149,38 @@ def timer_stop(request, timer_id):
         timer.completed_at = timezone.now()
         timer.save()
     return redirect('timer_list')
+
+@login_required
+def bookmark_list(request):
+    bookmarks = Bookmark.objects.filter(user=request.user).order_by('-bookmark_date', '-id')
+    
+    if request.method == 'POST':
+        form = BookmarkForm(request.POST)
+        if form.is_valid():
+            bookmark = form.save(commit=False)
+            bookmark.user = request.user
+            bookmark.save()
+            return redirect('bookmark_list')
+    else:
+        form = BookmarkForm()
+        
+    return render(request, 'tasks/bookmark_list.html', {'bookmarks': bookmarks, 'form': form})
+
+@login_required
+def reports_list(request):
+    reports = DailyReport.objects.filter(user=request.user).order_by('-report_date')
+    return render(request, 'tasks/reports_list.html', {'reports': reports})
+
+@login_required
+def report_generate(request):
+    if request.method == 'POST':
+        date_str = request.POST.get('report_date')
+        if date_str:
+            try:
+                target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                DailyReport.generate_for_date(request.user, target_date)
+                messages.success(request, f" Отчет за {target_date} успешно создан/обновлен.")
+            except ValueError:
+                messages.error(request, "Неверный формат даты!")
+        return redirect('reports_list')
+    return redirect('reports_list')

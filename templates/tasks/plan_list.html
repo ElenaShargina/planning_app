@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <!-- Верхняя панель раздела: Заголовок слева, Кнопка справа -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h2 style="margin: 0; font-size: 1.8rem; color: #333;">Мои Планы</h2>
         <a href="{% url 'plan_create' %}" class="btn" style="font-size: 1.5rem; padding: 10px 20px;">
@@ -9,7 +8,6 @@
         </a>
     </div>
 
-    <!-- Список планов (идет столбцом слева) -->
     <div style="display: flex; flex-direction: column; gap: 10px; max-width: 800px;">
         {% for plan in plans %}
             <div class="card" style="transition: transform 0.2s;">
@@ -26,12 +24,12 @@
                 </p>
                 
                 <div style="font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 8px;">
-                    📋 Всего: <b>{{ plan.total_tasks }}</b> 
+                    Всего задач: <b>{{ plan.total_tasks }}</b> 
                     {% if plan.completed_tasks > 0 %}
-                        | ✅ Готово: <b>{{ plan.completed_tasks }}</b>
+                        | Выполнено: <b>{{ plan.completed_tasks }}</b>
                     {% endif %}
                     {% if plan.pending_tasks > 0 %}
-                        | ⏳ В процессе: <b>{{ plan.pending_tasks }}</b>
+                        | В процессе: <b>{{ plan.pending_tasks }}</b>
                     {% endif %}
                 </div>
             </div>

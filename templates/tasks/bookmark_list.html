@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="margin: 0; font-size: 2.5rem; color: #333; font-weight: 600;">Мои Закладки</h2>
+    </div>
+
+    <!-- Форма добавления (только Название + Ссылка) -->
+    <div class="card" style="padding: 20px; margin-bottom: 25px;">
+        <form method="post" action="{% url 'bookmark_list' %}" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; margin: 0;">
+            {% csrf_token %}
+            <div style="flex: 1; min-width: 200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:500;">Название</label>
+                {{ form.title }}
+            </div>
+            <div style="flex: 2; min-width: 300px;">
+                <label style="display:block; margin-bottom:5px; font-weight:500;">Ссылка</label>
+                {{ form.url }}
+            </div>
+            <button type="submit" class="btn" style="font-size: 24px; padding: 10px 24px; line-height: 1; height: 46px; margin-bottom: 18px;">
+                + Добавить
+            </button>
+        </form>
+    </div>
+
+    <!-- Список закладок -->
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+        {% for bookmark in bookmarks %}
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; transition: transform 0.2s;">
+                <div style="flex: 1; min-width: 0;">
+                    <h3 style="margin: 0 0 6px 0; font-size: 1.4rem;">
+                        <a href="{{ bookmark.url }}" target="_blank" style="text-decoration: none; color: inherit; transition: color 0.2s;">
+                            {{ bookmark.title }}
+                        </a>
+                    </h3>
+                    <p style="margin: 0; color: #390051; font-size: 0.9rem; word-break: break-all; text-underline-offset: 3px;">
+                        {{ bookmark.url }}
+                    </p>
+                </div>
+                <div style="text-align: right; color: #666; font-size: 0.95rem; white-space: nowrap; margin-left: 20px;">
+                    {{ bookmark.bookmark_date|date:"d E Y" }}
+                </div>
+            </div>
+        {% empty %}
+            <div style="text-align: center; padding: 40px; color: #999; background: white; border-radius: 12px; border: 2px dashed #e9ecef;">
+                <p style="font-size: 1.4rem; margin-bottom: 10px;">Закладок пока нет</p>
+                <p style="font-size: 1.1rem;">Добавьте первую ссылку с помощью формы выше</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

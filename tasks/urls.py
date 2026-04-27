@@ -19,4 +19,7 @@ urlpatterns = [
     ),
     path('timers/', views.timer_list, name='timer_list'),
     path('timers/<int:timer_id>/stop/', views.timer_stop, name='timer_stop'),
+    path('reports/', views.reports_list, name='reports_list'),
+    path('reports/generate/', views.report_generate, name='report_generate'),
+    path('bookmarks/', views.bookmark_list, name='bookmark_list'),
 ]

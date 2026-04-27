@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-    <a href="{% url 'plan_list' %}" class="btn btn-outline">← Plans</a>
+    <a href="{% url 'plan_list' %}" class="btn btn-outline">← Планы</a>
     <h3>{{ plan.title }}</h3>
     <p>{{ plan.description }}</p>
 
-    <h4>Tasks</h4>
+    <h3>Задачи</h3>
     {% for task in tasks %}
     <div class="card {% if task.status == 'completed' %}task-completed{% endif %}">
         <strong>{{ task.title }}</strong> 
@@ -16,7 +16,7 @@
             </span>
         {% elif task.status != 'completed' %}
             <span style="float:right; font-size:0.85em; color:#6c757d;">
-                ⏳ In progress
+                В процессе
             </span>
         {% endif %}
         
@@ -30,17 +30,17 @@
         <br><br>
         <a href="{% url 'task_toggle_status' task.id %}" 
            class="btn {% if task.status == 'completed' %}btn-danger{% else %}btn-success{% endif %}">
-            {% if task.status == 'completed' %}↩ Mark Pending{% else %}✓ Mark Completed{% endif %}
+            {% if task.status == 'completed' %}↩ Выполнено {% else %}✓ Не выполнено{% endif %}
         </a>
     </div>
 {% empty %}
-    <p>No tasks in this plan.</p>
+    <p>Ещё нет задач в плане.</p>
 {% endfor %}
 
-    <h4>Add Task</h4>
+    <h4>Добавить задачу</h4>
     <form method="post" style="background:white; padding:20px; border-radius:8px;">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn">Add Task</button>
+        <button type="submit" class="btn">Добавить задачу</button>
     </form>
 {% endblock %}

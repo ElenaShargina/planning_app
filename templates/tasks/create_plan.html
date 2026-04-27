@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h3>Create Plan</h3>
+    <h3>Создать план</h3>
     <form method="post" style="background:white; padding:20px; border-radius:8px;">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn">Save Plan</button>
+        <button type="submit" class="btn">Сохранить</button>
     </form>
     <br><a href="{% url 'plan_list' %}" class="btn btn-outline">Cancel</a>
 {% endblock %}

@@ -6,10 +6,10 @@
     <title>{% block title %}Planner{% endblock %}</title>
     <style>
         :root {
-            --primary: #800080;
-            --bg-light: #f8f9fa;
-            --text-dark: #333;
-            --border-color: #e9ecef;
+            --primary: #4c4195;
+            --bg-light: #fffeff;
+            --text-dark: #000000;
+            --border-color: #ffffffe0;
         }
 
         html { font-size: 16px; }
@@ -25,14 +25,14 @@
 
         /* --- ВЕРХНЯЯ СТРОКА --- */
         .top-header {
-            background: white;
+            background: rgb(255, 255, 255);
             padding: 15px 20px;
             border-bottom: 1px solid var(--border-color);
             display: flex; /* Используем flex для выравнивания кругов и текста */
             align-items: center;
             justify-content: center; /* Центрируем заголовок */
             position: relative; /* Чтобы позиционировать круги абсолютно или относительно */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 4px rgba(255,250,250);
             z-index: 10;
             height: 80px; /* Фиксируем высоту для аккуратности */
         }
@@ -51,9 +51,9 @@
             border-radius: 50%;
             display: inline-block;
         }
-        .dot-red { background-color: #ff5f56; }
-        .dot-yellow { background-color: #ffbd2e; }
-        .dot-green { background-color: #27c93f; }
+        .dot-red { background-color: #9370DB; }
+        .dot-yellow { background-color: #6A5ACD; }
+        .dot-green { background-color: #483D8B; }
 
         .app-title {
             margin: 0;
@@ -74,7 +74,7 @@
         /* --- ЛЕВАЯ КОЛОНКА --- */
         .sidebar {
             width: 280px; /* Чуть шире для крупного текста */
-            background: white;
+            background: rgb(255, 255, 255);
             border-right: 1px solid var(--border-color);
             padding: 20px;
             display: flex;
@@ -93,7 +93,7 @@
             transition: all 0.2s;
         }
         .nav-item:hover {
-            background: #eef2ff;
+            background: #f1edffa1;
             color: var(--primary);
             transform: translateX(5px);
         }
@@ -127,7 +127,7 @@
         }
         .btn-logout { 
             font-size: 1rem; 
-            color: #dc3545; 
+            color: #5435dc; 
             text-decoration: none; 
             border-left: 1px solid #eee;
             padding-left: 15px;
@@ -140,7 +140,7 @@
             padding: 20px;
             margin-bottom: 15px;
             border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(160, 25, 25, 0.05);
             border: 1px solid var(--border-color);
         }
         .btn {
@@ -155,7 +155,7 @@
             font-weight: 500;
             font-family: inherit;
         }
-        .btn:hover { background: #0b5ed7; }
+        .btn:hover { background: #0d0d25; }
         
         input, textarea, select {
             width: 100%; padding: 12px; margin: 8px 0 20px;
@@ -164,7 +164,7 @@
             font-family: inherit;
         }
 
-         .flip-card {
+        .flip-card {
             background: transparent;
             width: 100%;
             max-width: 400px;
@@ -209,7 +209,7 @@
         }
 
         .flip-card-back {
-            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+            background: linear-gradient(135deg, #0d6efd, #3e0bd7);
             color: #fff;
             transform: rotateY(180deg);
         }
@@ -309,7 +309,6 @@
 </head>
 <body>
     <header class="top-header">
-        <!-- Три маленьких круга слева -->
         <div class="window-controls">
             <span class="dot dot-red"></span>
             <span class="dot dot-yellow"></span>
@@ -322,13 +321,19 @@
     <div class="main-layout">
         <aside class="sidebar">
             <a href="{% url 'plan_list' %}" class="nav-item {% if request.resolver_match.url_name == 'plan_list' or request.resolver_match.url_name == 'plan_detail' %}active{% endif %}">
-                📋 Планы
+                Планы
             </a>
             <a href="{% url 'collection_list' %}" class="nav-item {% if 'collection' in request.resolver_match.url_name %}active{% endif %}">
-                🗂️ Карточки
+                Карточки
             </a>
             <a href="{% url 'timer_list' %}" class="nav-item {% if 'timer' in request.resolver_match.url_name %}active{% endif %}">
-                ⏱️ Таймер
+                Таймер
+            </a>
+            <a href="{% url 'reports_list' %}" class="nav-item {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+                Отчеты
+            </a>
+            <a href="{% url 'bookmark_list' %}" class="nav-item {% if 'bookmark' in request.resolver_match.url_name %}active{% endif %}">
+                Закладки
             </a>
         </aside>
 
